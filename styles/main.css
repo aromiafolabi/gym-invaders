@@ -44,3 +44,9 @@ width: 10%;
   background-size: contain;
   cursor: pointer;
 }
+.grid div.playerLaser {
+  background-image: url(../fries.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: pointer;
+}
