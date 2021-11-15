@@ -6,8 +6,8 @@
 //// DB to appear on screen and to move down vertically(randomly +10)
 // program how many DBs to appear on screen and game ends when all have appeared(also program burger 3 lives)
 ////player shooting from burger
-// DB shooting randomly
-// if DB is hit, DB disappears from screen
+//// DB shooting randomly
+//// if DB is hit, DB disappears from screen
 // if burger is hit, one life is lost, if all lives lost game Over
 // when game ends final alert
 // build in further levels to make game harder
@@ -58,7 +58,9 @@ function addPlayerLaser(){
 }
 
 function removePlayerLaser(){
+  console.log(playerLaser)
   cells[playerLaser].classList.remove('playerLaser')
+  
 
 }
 function addComputerLaser() {
@@ -89,6 +91,7 @@ function handleGameStart(){
     // addDumbbell()
     handleComputerLaser()
     handleComputerControls()
+    // handlePlayerControls()
     // addPlayerLaser()
   // }, 500)
 }
@@ -96,9 +99,9 @@ function handlePlayerControls(e){
   e.preventDefault()
   const x = burgerPosition % width
   const y = playerLaser % width
-  console.log('x',x)
-  console.log('y',y)
-  console.log(e.code)
+  // console.log('x',x)
+  // console.log('y',y)
+  // console.log(e.code)
   
   removeBurger()
   removePlayerLaser()
@@ -111,18 +114,30 @@ function handlePlayerControls(e){
     removeBurger()
     burgerPosition++ 
     addBurger()
-  } else if (e.code === 'Space' && 'ArrowRight' && 'ArrowLeft') {
+  } else if (e.code === 'Space') {
     // removeBurger()
     // addBurger()
-    console.log(burgerPosition, playerLaser)
-    playerLaser = burgerPosition + width
-    setInterval(() => {
-      console.log(playerLaser)
+    // console.log(burgerPosition, playerLaser)
+    playerLaser = burgerPosition - width
+    const intervalID = setInterval(() => {
+      // console.log(playerLaser)
+      // console.log('y', y)
       removePlayerLaser()
       playerLaser -= width 
+      if (cells[playerLaser].classList.contains('dumbbell') ) {
+        cells[playerLaser].classList.remove('dumbbell')
+        cells[playerLaser].classList.remove('playerLaser')
+        console.log('beforesplice', dumbbellPosition)
+        // remove index from db array
+        dumbbellPosition.splice(y, 1)
+        playerLaser.splice(y)
+        console.log('afterslice', dumbbellPosition)
+        // stop laser
+        clearInterval(intervalID)
+      }
       addPlayerLaser()
     }, 1000)
-  
+    removePlayerLaser()
   }
   
 }
@@ -130,20 +145,22 @@ function handlePlayerControls(e){
 
 
 function handleComputerControls(){
-  dumbbellPosition.forEach((index) => {
-    console.log(index)
+  addDumbbell()
+  setInterval(() => {
     removeDumbbell()
-    addDumbbell() 
-    setInterval(() => {
-      cells[index].classList.remove('dumbbell')
+    dumbbellPosition = dumbbellPosition.map((index) => {
+      console.log('computercontrol', index)
       // removeDumbbell()
+      // addDumbbell() 
+      console.log(dumbbellPosition)
+      // cells[index].classList.remove('dumbbell')
       index += width
-      // addDumbbell()
-      console.log('db', index)
-      cells[index].classList.add('dumbbell')
-    }, 1000) 
-  })
-  
+      // console.log('db', index)
+      // cells[index].classList.add('dumbbell')
+      return index
+    })
+    addDumbbell()
+  }, 3000) 
 }
 function handleComputerLaser(){
   dumbbellPosition.forEach((index) => {
@@ -153,8 +170,7 @@ function handleComputerLaser(){
       computerLaser = index += width
       console.log('laser', index, computerLaser)
       cells[index].classList.add('computerLaser')
-    }, 500)
-    // addDumbbell()
+    }, 2000)
   })
 }
 // handleComputerLaser()
