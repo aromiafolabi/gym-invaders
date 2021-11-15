@@ -3,12 +3,12 @@
 ///// Make DB and burger an image class
 //// Game start by clicking
 //// burger to appear on screen and be controlled back and forth by player (removed from cell when player moves it)
-// DB to appear on screen and to move down vertically(randomly +10)
+//// DB to appear on screen and to move down vertically(randomly +10)
 // program how many DBs to appear on screen and game ends when all have appeared(also program burger 3 lives)
-// player shooting from burger
+////player shooting from burger
 // DB shooting randomly
 // if DB is hit, DB disappears from screen
-// if burger is history, one life is lost, if all lives lost game Over
+// if burger is hit, one life is lost, if all lives lost game Over
 // when game ends final alert
 // build in further levels to make game harder
 // transition between levels
@@ -28,7 +28,8 @@ const gridCellCount = width * width
 let burgerPosition = 95
 let dumbbellPosition = [0,1,2,3,4,5,6,7,8,9]
 let playerLaser = burgerPosition - width
-
+console.log(playerLaser)
+// let computerLaser = dumbbellPosition + width
 
 
 // Building the grid
@@ -60,6 +61,12 @@ function removePlayerLaser(){
   cells[playerLaser].classList.remove('playerLaser')
 
 }
+function addComputerLaser() {
+  cells[computerLaser].classList.add('computerLaser')
+}
+function removeComputerLaser(){
+  cells[computerLaser].classList.remove('computerLaser')
+}
 
 function removeDumbbell(){
   dumbbellPosition.forEach((index) => {
@@ -77,59 +84,80 @@ function addDumbbell(){
 }
 
 function handleGameStart(){
-  window.setInterval(() => {
+  // window.setInterval(() => {
     addBurger()
-    addDumbbell()
-    removePlayerLaser()
-    addPlayerLaser()
-  }, 500)
+    // addDumbbell()
+    handleComputerLaser()
+    handleComputerControls()
+    // addPlayerLaser()
+  // }, 500)
 }
 function handlePlayerControls(e){
+  e.preventDefault()
   const x = burgerPosition % width
-  console.log(x)
+  const y = playerLaser % width
+  console.log('x',x)
+  console.log('y',y)
+  console.log(e.code)
   
   removeBurger()
   removePlayerLaser()
-
+  addBurger()
   if (e.code === 'ArrowLeft' && x > 0) {
-    return burgerPosition-- 
+    removeBurger()
+    burgerPosition-- 
+    addBurger()
   } else if (e.code === 'ArrowRight' && x < width - 1) {
-    return burgerPosition++
-  } else if (e.code === 'space') {
-    return playerLaser
-  }  else {
-    return 'invalid do nothing'
-  } 
+    removeBurger()
+    burgerPosition++ 
+    addBurger()
+  } else if (e.code === 'Space' && 'ArrowRight' && 'ArrowLeft') {
+    // removeBurger()
+    // addBurger()
+    console.log(burgerPosition, playerLaser)
+    playerLaser = burgerPosition + width
+    setInterval(() => {
+      console.log(playerLaser)
+      removePlayerLaser()
+      playerLaser -= width 
+      addPlayerLaser()
+    }, 1000)
+  
+  }
+  
 }
 
 
-// function handleComputerControls(){
-//   removeDumbbell()
-//   // dumbbellPosition.forEach((index) => {
-//   //   dumbbellPosition = [index]
-//   //   const y = dumbbellPosition % length
-//   //   console.log(y)
-//   //   console.log(dumbbellPosition)
-//   // })
-//   // window.setInterval(() => {
-//   dumbbellPosition.forEach((index) => {
-//     dumbbellPosition = [index]
-//     const y = Math.floor(dumbbellPosition % width)
-//     dumbbellPosition % width
-//     Math.floor(dumbbellPosition % width)
-//     console.log('y', y)
-//     console.log(dumbbellPosition)
-//     if (y > 0) {
-//       return dumbbellPosition -= width
-//     } else if (y < width - 1) {
-//       return dumbbellPosition += width
-//     }
-//     // }, 1000)
-    
-//   })
-//   addDumbbell()
-// }
-// handleComputerControls()
+
+function handleComputerControls(){
+  dumbbellPosition.forEach((index) => {
+    console.log(index)
+    removeDumbbell()
+    addDumbbell() 
+    setInterval(() => {
+      cells[index].classList.remove('dumbbell')
+      // removeDumbbell()
+      index += width
+      // addDumbbell()
+      console.log('db', index)
+      cells[index].classList.add('dumbbell')
+    }, 1000) 
+  })
+  
+}
+function handleComputerLaser(){
+  dumbbellPosition.forEach((index) => {
+    let computerLaser = dumbbellPosition + width
+    setInterval(() => {
+      cells[index].classList.remove('computerLaser')
+      computerLaser = index += width
+      console.log('laser', index, computerLaser)
+      cells[index].classList.add('computerLaser')
+    }, 500)
+    // addDumbbell()
+  })
+}
+// handleComputerLaser()
 
 // Events
 startButton.addEventListener('click', handleGameStart)

@@ -45,7 +45,14 @@ width: 10%;
   cursor: pointer;
 }
 .grid div.playerLaser {
-  background-image: url(../fries.png);
+  background-image: url(../Images/fries.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.grid div.computerLaser {
+  background-image: url(../Images/celery.png);
   background-repeat: no-repeat;
   background-size: contain;
   cursor: pointer;
