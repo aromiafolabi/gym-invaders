@@ -21,15 +21,39 @@ const startButton = document.querySelector('#start')
 // let dumbbellPosition = document.querySelector('.grid > div')
 
 // Grid Variables
-const width = 10
+const width = 20
 const gridCellCount = width * width 
 
 // Game Variables
-let burgerPosition = 95
-let dumbbellPosition = [0,1,2,3,4,5,6,7,8,9]
-let playerLaser = burgerPosition - width
-console.log(playerLaser)
-// let computerLaser = dumbbellPosition + width
+let burgerPosition = 390
+let dumbbellPosition = [
+  { index: 8, isAlive: true },
+  { index: 9, isAlive: true },
+  { index: 10, isAlive: true },
+  { index: 11, isAlive: true },
+  { index: 12, isAlive: true },
+  { index: 28, isAlive: true },
+  { index: 29, isAlive: true },
+  { index: 30, isAlive: true },
+  { index: 31, isAlive: true },
+  { index: 32, isAlive: true },
+  { index: 48, isAlive: true },
+  { index: 49, isAlive: true },
+  { index: 50, isAlive: true },
+  { index: 51, isAlive: true },
+  { index: 52, isAlive: true },
+  { index: 68, isAlive: true },
+  { index: 69, isAlive: true },
+  { index: 70, isAlive: true },
+  { index: 71, isAlive: true },
+  { index: 72, isAlive: true }
+] 
+let playerLaser =  burgerPosition - width
+
+
+// let computerLaser = dumbbellPosition[dumbbellPosition.index] + width
+// console.log(computerLaser)
+let direction = 1
 
 
 // Building the grid
@@ -58,7 +82,6 @@ function addPlayerLaser(){
 }
 
 function removePlayerLaser(){
-  console.log(playerLaser)
   cells[playerLaser].classList.remove('playerLaser')
   
 
@@ -70,17 +93,26 @@ function removeComputerLaser(){
   cells[computerLaser].classList.remove('computerLaser')
 }
 
+function removeDumbbellClass() {
+  dumbbellPosition.forEach((currentDumbbell) => {
+    cells[currentDumbbell.index].classList.remove('dumbbell')  
+  })
+}
 function removeDumbbell(){
-  dumbbellPosition.forEach((index) => {
-    cells[index].classList.remove('dumbbell')
+  dumbbellPosition.forEach((currentDumbbell) => {
+    if (!currentDumbbell.isAlive){
+      cells[currentDumbbell.index].classList.remove('dumbbell')
+    }
   })
   
 }
 
 
 function addDumbbell(){
-  dumbbellPosition.forEach((index) => {
-    cells[index].classList.add('dumbbell') 
+  dumbbellPosition.forEach((currentDumbbell) => {
+    if (currentDumbbell.isAlive) {
+      cells[currentDumbbell.index].classList.add('dumbbell') 
+    }
   })
   
 }
@@ -89,23 +121,22 @@ function handleGameStart(){
   // window.setInterval(() => {
     addBurger()
     // addDumbbell()
-    handleComputerLaser()
+    // handleComputerLaser()
     handleComputerControls()
-    // handlePlayerControls()
+    handlePlayerControls()
     // addPlayerLaser()
   // }, 500)
 }
 function handlePlayerControls(e){
-  e.preventDefault()
   const x = burgerPosition % width
-  const y = playerLaser % width
+  // const y = playerLaser % width
   // console.log('x',x)
   // console.log('y',y)
   // console.log(e.code)
   
-  removeBurger()
-  removePlayerLaser()
-  addBurger()
+  // removeBurger()
+  // removePlayerLaser()
+  // addBurger()
   if (e.code === 'ArrowLeft' && x > 0) {
     removeBurger()
     burgerPosition-- 
@@ -118,61 +149,110 @@ function handlePlayerControls(e){
     // removeBurger()
     // addBurger()
     // console.log(burgerPosition, playerLaser)
-    playerLaser = burgerPosition - width
+    playerLaser = burgerPosition 
     const intervalID = setInterval(() => {
       // console.log(playerLaser)
       // console.log('y', y)
       removePlayerLaser()
       playerLaser -= width 
-      if (cells[playerLaser].classList.contains('dumbbell') ) {
-        cells[playerLaser].classList.remove('dumbbell')
-        cells[playerLaser].classList.remove('playerLaser')
-        console.log('beforesplice', dumbbellPosition)
-        // remove index from db array
-        dumbbellPosition.splice(y, 1)
-        playerLaser.splice(y)
-        console.log('afterslice', dumbbellPosition)
-        // stop laser
-        clearInterval(intervalID)
-      }
       addPlayerLaser()
-    }, 1000)
-    removePlayerLaser()
+      if (cells[playerLaser].classList.contains('dumbbell') ) {
+        cells[playerLaser].classList.remove('playerLaser')
+        console.log(playerLaser)
+        clearInterval(intervalID)
+        const dumbbellIndex = dumbbellPosition.find(dumbbell => {
+          return dumbbell.index === playerLaser
+        })
+        dumbbellIndex.isAlive = false
+        cells[playerLaser].classList.remove('playerLaser')
+        
+      }
+      
+    }, 200)
+    
   }
   
 }
 
+function computerMoveRight() {
+  removeDumbbellClass()
+  dumbbellPosition = dumbbellPosition.map(dumbbell => {
+    dumbbell.index += 1 
+    return dumbbell
+  })
+  addDumbbell()
+}
+function computerMovesLeft () {
+  removeDumbbellClass()
+  dumbbellPosition = dumbbellPosition.map(dumbbell => {
+    dumbbell.index -= 1
+    return dumbbell
+  })
+  addDumbbell()
+}
 
 
 function handleComputerControls(){
   addDumbbell()
   setInterval(() => {
     removeDumbbell()
-    dumbbellPosition = dumbbellPosition.map((index) => {
-      console.log('computercontrol', index)
-      // removeDumbbell()
-      // addDumbbell() 
-      console.log(dumbbellPosition)
-      // cells[index].classList.remove('dumbbell')
-      index += width
-      // console.log('db', index)
-      // cells[index].classList.add('dumbbell')
-      return index
-    })
-    addDumbbell()
-  }, 3000) 
+    const rightBorder = dumbbellPosition[dumbbellPosition.length - 1].index % width === width - 2
+    const leftBorder = dumbbellPosition[0].index % width === 1
+    if (direction === 1) {
+      computerMoveRight()
+      if (rightBorder) {
+        removeDumbbellClass()
+        dumbbellPosition = dumbbellPosition.map(dumbbell => {
+          dumbbell.index += width
+          return dumbbell
+        })
+        direction = -1
+        addDumbbell()
+      }
+    } else {
+      if (direction === -1)  {
+        computerMovesLeft()
+        if (leftBorder) {
+          removeDumbbellClass()
+          dumbbellPosition = dumbbellPosition.map(dumbbell => {
+            dumbbell.index += width
+            return dumbbell
+          })
+          direction = 1
+          addDumbbell()
+        }
+      }
+      addDumbbell()
+    }
+  
+  }, 500) 
 }
-function handleComputerLaser(){
-  dumbbellPosition.forEach((index) => {
-    let computerLaser = dumbbellPosition + width
-    setInterval(() => {
-      cells[index].classList.remove('computerLaser')
-      computerLaser = index += width
-      console.log('laser', index, computerLaser)
-      cells[index].classList.add('computerLaser')
-    }, 2000)
-  })
-}
+// function handleComputerLaser(){
+//   addComputerLaser()
+//   setInterval(() => {
+//     removeComputerLaser()
+//     computerLaser = dumbbellPosition[dumbbellPosition.index] + width
+    // if (cells[computerLaser].classList.)
+    
+
+  // })
+  // dumbbellPosition.forEach((currentCLaser) => {
+  //   let computerLaser = dumbbellPosition[dumbbellPosition].index + width
+  //   console.log(dumbbellPosition.index, computerLaser)
+  //   const computerLaserIntId = setInterval(() => {
+  //     cells[currentCLaser].classList.remove('computerLaser')
+  //     computerLaser = dumbbellPosition.index + width
+  //     console.log('laser', dumbbellPosition.index, computerLaser)
+  //     cells[currentCLaser].classList.add('computerLaser')
+      // if (cells[computerLaser].classList.contains('burger')) {   
+      //   cells[computerLaser].classList.remove('burger')
+      //   console.log('hdhdfbdjdhdbdm', computerLaser)
+      //   removePlayerLaser()
+      // }
+      // clearInterval(computerLaserIntId)
+  //   }, 500)
+  // })
+// }
 // handleComputerLaser()
 
 // Events
