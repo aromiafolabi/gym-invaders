@@ -25,6 +25,7 @@ const overallScore = document.querySelector('#Score-Display')
 const width = 20
 const gridCellCount = width * width 
 
+
 // Game Variables
 let burgerPosition = 370
 let dumbbellPosition = [
@@ -60,6 +61,7 @@ let dumbbellPosition = [
 // console.log(computerLaser)
 let direction = 1
 let score = 0
+const x = burgerPosition % width 
 
 
 // Building the grid
@@ -132,42 +134,23 @@ function handleGameStart(){
     // addPlayerLaser()
   // }, 500)
 }
-function handlePlayerControls(e){
-  // playerLaser = burgerPosition - width
-  const x = burgerPosition % width
-  // const y = playerLaser % width
-  // console.log('x',x)
-  // console.log('y',y)
-  // console.log(e.code)
-  
-  // removeBurger()
-  // removePlayerLaser()
-  // addBurger()
-  if (e.code === 'ArrowLeft' && x > 0) {
+function handlePlayerControls(event){
+  if (event.code === 'ArrowLeft' && x > 0) {
     removeBurger()
     burgerPosition-- 
     addBurger()
-  } else if (e.code === 'ArrowRight' && x < width - 1) {
+  } else if (event.code === 'ArrowRight' && x < width - 1) {
     removeBurger()
     burgerPosition++ 
     addBurger()
-  } else if (e.code === 'Space') {
-    // removeBurger()
-    // addBurger()
-    // console.log(burgerPosition, playerLaser)
-    let playerLaser = burgerPosition 
-    // function addPlayerLaser(){
-    //   cells[playerLaser].classList.add('playerLaser')
-      
-    // }
     
-    // function removePlayerLaser(){
-    //   cells[playerLaser].classList.remove('playerLaser') 
-    
-    // }
+  }
+}
+
+function handlePlayerLaser(event){
+  if (event.code === 'Space'){
+    let playerLaser = burgerPosition
     const intervalID = setInterval(() => {
-      // console.log(playerLaser)
-      // console.log('y', y)
       cells[playerLaser].classList.remove('playerLaser') 
       playerLaser -= width 
       cells[playerLaser].classList.add('playerLaser')
@@ -181,18 +164,13 @@ function handlePlayerControls(e){
         dumbbellIndex.isAlive = false
         cells[playerLaser].classList.remove('playerLaser')
         score += 1000
-        overallScore.innerHTML = score
-      
-      
+        overallScore.innerHTML = score   
       } else if (playerLaser < width) { 
         cells[playerLaser].classList.remove('playerLaser')
         clearInterval(intervalID)
-      }
-      
+      }    
     }, 200)
-    
   }
-  
 }
 
 function computerMoveRight() {
@@ -249,16 +227,14 @@ function handleComputerControls(){
   }, 500) 
 }
 function handleComputerLaser(){
-  // const computerLaserID = setInterval(() => {
+  const computerLaserID = setInterval(() => {
     let isDumbbellFree = false
     const randomDumbbell = dumbbellPosition[Math.floor(Math.random() * dumbbellPosition.length)].index
     const dumbbellToShoot = dumbbellPosition.find(dumbbell => {
-      console.log(dumbbell, randomDumbbell)
       return dumbbell.index === randomDumbbell
     })
-    console.log(dumbbellToShoot)
     let computerLaserIndex = dumbbellToShoot.index + width
-
+  
     const dbLaserMovement = setInterval(() => {
       cells[computerLaserIndex].classList.remove('computerLaser')
       computerLaserIndex += width 
@@ -266,7 +242,6 @@ function handleComputerLaser(){
   
       if (cells[computerLaserIndex].classList.contains('burger')) {
         cells[computerLaserIndex].classList.remove('burger')
-        console.log(computerLaserIndex)
         clearInterval(dbLaserMovement)
         isDumbbellFree = false
         cells[computerLaserIndex].classList.remove('computerLaser')  
@@ -274,19 +249,14 @@ function handleComputerLaser(){
         clearInterval(dbLaserMovement)
         cells[computerLaserIndex].classList.remove('computerLaser')
       }
-
-      console.log(computerLaserIndex)
-    }, 500)
-
-    
-  // }, 1000)
-  // clearInterval(computerLaserID)
-  // })
+    }, 1000)
+  }, 3000)
 }
-// handleComputerLaser()
+
 
 // Events
 startButton.addEventListener('click', handleGameStart)
 document.addEventListener('keyup', handlePlayerControls)
-// document.addEventListener('mouseenter', handleComputerControls)
+document.addEventListener('keyup', handlePlayerLaser)
+
 
