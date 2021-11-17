@@ -6,7 +6,23 @@ body {
   height: 100vh;
   margin: 0;
 }
+header {
+  display: flex;
+  justify-content: center;
 
+}
+.controls-wrapper{
+  background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREE-IkK5xKm4NRmA-Chcj7IMLt7c0tikNUM1rAlKEIKaWwjE3pkIQOoozQt6xCXzQnCZ4&usqp=CAU);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  color: white;
+  display: block;
+  float: left;
+  border: 1px solid gray;
+  margin: 0px 5px;
+
+}
 .grid-wrapper {
   height: 90vh;
   display: flex;
@@ -22,6 +38,10 @@ body {
   justify-content: center;
   height: 600px;
   width: 600px;
+  background-image: url(https://media.istockphoto.com/photos/gym-space-picture-id1263905214?b=1&k=20&m=1263905214&s=170667a&w=0&h=d_AcACSLVm0CuPurs1ttrmWJKDZHQ9XnurdN5wkrwqw=);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 .grid div {
