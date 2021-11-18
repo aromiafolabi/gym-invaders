@@ -1,25 +1,13 @@
 
-//// Make grid Dynamically
-///// Make DB and burger an image class
-//// Game start by clicking
-//// burger to appear on screen and be controlled back and forth by player (removed from cell when player moves it)
-//// DB to appear on screen and to move down vertically(randomly +10)
-// program how many DBs to appear on screen and game ends when all have appeared(also program burger 3 lives)
-////player shooting from burger
-//// DB shooting randomly
-//// if DB is hit, DB disappears from screen
-// if burger is hit, one life is lost, if all lives lost game Over
-// when game ends final alert
-// build in further levels to make game harder
-// transition between levels
-
 
 // DOM Elements
 const grid = document.querySelector('.grid')
 const cells = []
 const startButton = document.querySelector('#start')
 const overallScore = document.querySelector('#Score-Display')
-// let dumbbellPosition = document.querySelector('.grid > div')
+const lifeRemaining = document.querySelector('#life-left')
+
+
 
 // Grid Variables
 const width = 20
@@ -50,18 +38,12 @@ let dumbbellPosition = [
   { index: 71, isAlive: true },
   { index: 72, isAlive: true }
 ] 
-// let playerLaser =  burgerPosition - width
-// let computerLaser = dumbbellPosition.map(dumbbell => {
-//   return dumbbell.index += width 
-// })
-// console.log(computerLaser)
 
-
-// let computerLaser = dumbbellPosition[dumbbellPosition.index] + width
-// console.log(computerLaser)
 let direction = 1
 let score = 0
+let lives = 3
 const x = burgerPosition % width 
+let hasGameEnded = false
 
 
 // Building the grid
@@ -69,43 +51,27 @@ function createGrid (){
   for (let i = 0; i < gridCellCount; i++) {
     const cell = document.createElement('div')
     cells.push(cell)
-    cell.textContent = i
+    // cell.textContent = i
     grid.appendChild(cell)
   }
 }
 createGrid()
 
 // Functions
-function removeBurger(){
+function removeBurger(){ //Removes player
   cells[burgerPosition].classList.remove('burger')
 }
 
-function addBurger(){
+function addBurger(){ //Adds player
   cells[burgerPosition].classList.add('burger')
 }
 
-// function addPlayerLaser(){
-//   cells[playerLaser].classList.add('playerLaser')
-  
-// }
-
-// function removePlayerLaser(){
-//   cells[playerLaser].classList.remove('playerLaser') 
-
-// }
-// function addComputerLaser() {
-//   cells[computerLaser].classList.add('computerLaser')
-// }
-// function removeComputerLaser(){
-//   cells[computerLaser].classList.remove('computerLaser')
-// }
-
-function removeDumbbellClass() {
+function removeDumbbellClass() { //Removes alien class
   dumbbellPosition.forEach((currentDumbbell) => {
     cells[currentDumbbell.index].classList.remove('dumbbell')  
   })
 }
-function removeDumbbell(){
+function removeDumbbell(){ //Removes alien
   dumbbellPosition.forEach((currentDumbbell) => {
     if (!currentDumbbell.isAlive){
       cells[currentDumbbell.index].classList.remove('dumbbell')
@@ -114,8 +80,7 @@ function removeDumbbell(){
   
 }
 
-
-function addDumbbell(){
+function addDumbbell(){ //Adds alien
   dumbbellPosition.forEach((currentDumbbell) => {
     if (currentDumbbell.isAlive) {
       cells[currentDumbbell.index].classList.add('dumbbell') 
@@ -124,17 +89,18 @@ function addDumbbell(){
   
 }
 
-function handleGameStart(){
-  // window.setInterval(() => {
+function handleGameStart(){ //Handles game start
+  startButton.style.visibility = 'hidden'
+  
     addBurger()
-    // addDumbbell()
+    
     handleComputerLaser()
     handleComputerControls()
     handlePlayerControls()
-    // addPlayerLaser()
-  // }, 500)
+    
 }
-function handlePlayerControls(event){
+
+function handlePlayerControls(event){ //Player controls
   if (event.code === 'ArrowLeft' && x > 0) {
     removeBurger()
     burgerPosition-- 
@@ -147,7 +113,8 @@ function handlePlayerControls(event){
   }
 }
 
-function handlePlayerLaser(event){
+
+function handlePlayerLaser(event){ // Player Laser controls
   if (event.code === 'Space'){
     let playerLaser = burgerPosition
     const intervalID = setInterval(() => {
@@ -161,14 +128,16 @@ function handlePlayerLaser(event){
         const dumbbellIndex = dumbbellPosition.find(dumbbell => {
           return dumbbell.index === playerLaser
         })
-        dumbbellIndex.isAlive = false
+        dumbbellIndex.isAlive = false // Removes player laser if an alien is hit
         cells[playerLaser].classList.remove('playerLaser')
-        score += 1000
+        score += 1000 // Adds score
         overallScore.innerHTML = score   
       } else if (playerLaser < width) { 
         cells[playerLaser].classList.remove('playerLaser')
         clearInterval(intervalID)
-      }    
+      } else if (score >= 10000) { // Player wins if they score this much
+        grid.textContent = `You have defeated the gym heads! You scored ${score}`
+      }   
     }, 200)
   }
 }
@@ -191,11 +160,25 @@ function computerMovesLeft () {
 }
 
 
-function handleComputerControls(){
+function handleComputerControls(){ // Programming dynamic movement of aliens
   addDumbbell()
-  setInterval(() => {
+
+  const clearDB = setInterval(() => {
     removeDumbbell()
-    const rightBorder = dumbbellPosition[dumbbellPosition.length - 1].index % width === width - 2
+    const aliveDb = dumbbellPosition.filter(dumbbell => {
+      return dumbbell.isAlive === true
+    })
+    const dbBottomBorderCheck = aliveDb.map(dumbbell => {//Maping through object array to trigger game end 
+      if (dumbbell.index > 360) {
+        cells[dumbbell.index].classList.remove('dumbbell')
+        clearInterval(clearDB)
+        hasGameEnded = true
+        grid.textContent = `You lose! You scored ${score}`
+        overallScore.innerHTML = `${score}` 
+      } else if (aliveDb === false) //If all aliens are killed, triggers end game
+        grid.textContent = `You have defeated the gym heads! You scored ${score}`
+    })
+    const rightBorder = dumbbellPosition[dumbbellPosition.length - 1].index % width === width - 2//Defining the left and right borders of grid
     const leftBorder = dumbbellPosition[0].index % width === 1
     if (direction === 1) {
       computerMoveRight()
@@ -218,18 +201,21 @@ function handleComputerControls(){
             return dumbbell
           })
           direction = 1
-          addDumbbell()
+          addDumbbell()        
+          
         }
-      }
-      addDumbbell()
+        addDumbbell()
+      } 
+        
     }
-  
+
   }, 500) 
 }
-function handleComputerLaser(){
+
+function handleComputerLaser(){ //Handles alien laser behaviour
   const computerLaserID = setInterval(() => {
     let isDumbbellFree = false
-    const randomDumbbell = dumbbellPosition[Math.floor(Math.random() * dumbbellPosition.length)].index
+    const randomDumbbell = dumbbellPosition[Math.floor(Math.random() * dumbbellPosition.length)].index //Generating random alien to shoot from
     const dumbbellToShoot = dumbbellPosition.find(dumbbell => {
       return dumbbell.index === randomDumbbell
     })
@@ -239,18 +225,29 @@ function handleComputerLaser(){
       cells[computerLaserIndex].classList.remove('computerLaser')
       computerLaserIndex += width 
       cells[computerLaserIndex].classList.add('computerLaser')
-  
+
+      
       if (cells[computerLaserIndex].classList.contains('burger')) {
-        cells[computerLaserIndex].classList.remove('burger')
         clearInterval(dbLaserMovement)
+        cells[computerLaserIndex].classList.remove('burger')  
+        burgerPosition = 370 
+        cells[burgerPosition].classList.add('burger')
+        lives = lives - 1 
+        lifeRemaining.textContent = lives
         isDumbbellFree = false
-        cells[computerLaserIndex].classList.remove('computerLaser')  
+        cells[computerLaserIndex].classList.remove('computerLaser') 
+      } else if (lives === 0) {
+        grid.textContent = `You lose! You scored ${score}`
+        overallScore.innerHTML = `${score}`         
       } else if (computerLaserIndex > 380){
         clearInterval(dbLaserMovement)
-        cells[computerLaserIndex].classList.remove('computerLaser')
+        cells[computerLaserIndex].classList.remove('computerLaser')      
+      } else if (hasGameEnded){
+        clearInterval(dbLaserMovement)
+        clearInterval(computerLaserID)
       }
-    }, 1000)
-  }, 3000)
+    }, 500)
+  }, 5000)
 }
 
 

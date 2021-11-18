@@ -4,7 +4,8 @@
 
 body {
   height: 100vh;
-  margin: 0;
+  margin: 0 auto;
+  background-color: gray;
 }
 header {
   display: flex;
@@ -12,26 +13,37 @@ header {
 
 }
 .controls-wrapper{
-  background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREE-IkK5xKm4NRmA-Chcj7IMLt7c0tikNUM1rAlKEIKaWwjE3pkIQOoozQt6xCXzQnCZ4&usqp=CAU);
+  background-image: ;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  color: white;
-  display: block;
+  color: black;
   float: left;
   border: 1px solid gray;
-  margin: 0px 5px;
-
+  margin: 0px 40px 0px 200px;
+  height: 80vh;
+  width: 150px;
+  padding: 20px 0px 20px 2px;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.9);
 }
+
+.playerControls img{
+  height: 25px;
+}
+
 .grid-wrapper {
   height: 90vh;
+  width: 600px;
   display: flex;
   justify-content: center;
+  color: white;
+  margin: 0px 0px 0px 20px;
+  padding: 0px;
 }
 
 .grid {
   align-items: center;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.9);
   display: flex;
   flex-wrap: wrap;
   height: 100%;
@@ -42,10 +54,11 @@ header {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+  margin: 0px 0px 0px 0px;
 }
 
 .grid div {
-border: 1px solid gray;
+border: none;
 flex-grow: 1;
 height: 5%;
 width: 5%;
