@@ -42,7 +42,6 @@ let dumbbellPosition = [
 let direction = 1
 let score = 0
 let lives = 3
-// let x = burgerPosition % width 
 let hasGameEnded = false
 
 
@@ -51,7 +50,6 @@ function createGrid (){
   for (let i = 0; i < gridCellCount; i++) {
     const cell = document.createElement('div')
     cells.push(cell)
-    // cell.textContent = i
     grid.appendChild(cell)
   }
 }
@@ -120,33 +118,30 @@ function handlePlayerControls(event){ //Player controls
 
 
 function handlePlayerLaser(){ // Player Laser controls
-  console.log('player laser')
-  //  (event.code === 'Space'){
-    console.log('space laser')
-    let playerLaser = burgerPosition
-    const intervalID = setInterval(() => {
-      cells[playerLaser].classList.remove('playerLaser') 
-      playerLaser -= width 
-      cells[playerLaser].classList.add('playerLaser')
-      if (cells[playerLaser].classList.contains('dumbbell') ) {       
-        cells[playerLaser].classList.remove('playerLaser')        
-        console.log(playerLaser)
-        clearInterval(intervalID)
-        const dumbbellIndex = dumbbellPosition.find(dumbbell => {
-          return dumbbell.index === playerLaser
-        })
-        dumbbellIndex.isAlive = false // Removes player laser if an alien is hit
-        cells[playerLaser].classList.remove('playerLaser')
-        score += 1000 // Adds score
-        overallScore.innerHTML = score   
-      } else if (playerLaser < width) { 
-        cells[playerLaser].classList.remove('playerLaser')
-        clearInterval(intervalID)
-      } else if (score >= 22000) { // Player wins if they score this much
-        grid.textContent = `You have defeated the gym heads! You scored ${score}`
-        resetGame()
-      }   
-    }, 120)
+  let playerLaser = burgerPosition
+  const intervalID = setInterval(() => {
+    cells[playerLaser].classList.remove('playerLaser') 
+    playerLaser -= width 
+    cells[playerLaser].classList.add('playerLaser')
+    if (cells[playerLaser].classList.contains('dumbbell') ) {       
+      cells[playerLaser].classList.remove('playerLaser')        
+      console.log(playerLaser)
+      clearInterval(intervalID)
+      const dumbbellIndex = dumbbellPosition.find(dumbbell => {
+        return dumbbell.index === playerLaser
+      })
+      dumbbellIndex.isAlive = false // Removes player laser if an alien is hit
+      cells[playerLaser].classList.remove('playerLaser')
+      score += 1000 // Adds score
+      overallScore.innerHTML = score   
+    } else if (playerLaser < width) { 
+      cells[playerLaser].classList.remove('playerLaser')
+      clearInterval(intervalID)
+    } else if (score >= 22000) { // Player wins if they score this much
+      grid.textContent = `You have defeated the gym heads! You scored ${score}`
+      resetGame()
+    }   
+  }, 120)
   
 }
 
@@ -263,6 +258,5 @@ function handleComputerLaser(){ //Handles alien laser behaviour
 // * * * * * EVENTS  * * * * *
 startButton.addEventListener('click', handleGameStart)
 document.addEventListener('keyup', handlePlayerControls)
-// document.addEventListener('keyup', handlePlayerLaser)
 
 
