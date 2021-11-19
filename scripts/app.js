@@ -1,6 +1,6 @@
 
 
-// DOM Elements
+// * * * * * DOM ELEMENTS * * * * *
 const grid = document.querySelector('.grid')
 const cells = []
 const startButton = document.querySelector('#start')
@@ -9,12 +9,12 @@ const lifeRemaining = document.querySelector('#life-left')
 
 
 
-// Grid Variables
+// * * * * * GRID VARIABLES  * * * * *
 const width = 20
 const gridCellCount = width * width 
 
 
-// Game Variables
+// * * * * * GAME VARIABLES * * * * *
 let burgerPosition = 370
 let dumbbellPosition = [
   { index: 8, isAlive: true },
@@ -42,11 +42,11 @@ let dumbbellPosition = [
 let direction = 1
 let score = 0
 let lives = 3
-const x = burgerPosition % width 
+// let x = burgerPosition % width 
 let hasGameEnded = false
 
 
-// Building the grid
+// * * * * * BUILDING THE GRID * * * * *
 function createGrid (){
   for (let i = 0; i < gridCellCount; i++) {
     const cell = document.createElement('div')
@@ -57,7 +57,13 @@ function createGrid (){
 }
 createGrid()
 
-// Functions
+// * * * * * FUNCTIONS * * * * *
+function resetGame(){
+  setTimeout(() => {
+    location.reload()
+  }, 3000)
+}
+
 function removeBurger(){ //Removes player
   cells[burgerPosition].classList.remove('burger')
 }
@@ -91,38 +97,39 @@ function addDumbbell(){ //Adds alien
 
 function handleGameStart(){ //Handles game start
   startButton.style.visibility = 'hidden'
-  
-    addBurger()
-    
-    handleComputerLaser()
-    handleComputerControls()
-    handlePlayerControls()
-    
+  addBurger()    
+  handleComputerLaser()
+  handleComputerControls()   
 }
 
 function handlePlayerControls(event){ //Player controls
+  event.preventDefault()
+  const x = burgerPosition % width
   if (event.code === 'ArrowLeft' && x > 0) {
-    removeBurger()
+    cells[burgerPosition].classList.remove('burger')
     burgerPosition-- 
-    addBurger()
+    cells[burgerPosition].classList.add('burger')   
   } else if (event.code === 'ArrowRight' && x < width - 1) {
     removeBurger()
     burgerPosition++ 
-    addBurger()
-    
+    addBurger()    
+  } else if (event.code === 'Space') {
+    handlePlayerLaser()
   }
 }
 
 
-function handlePlayerLaser(event){ // Player Laser controls
-  if (event.code === 'Space'){
+function handlePlayerLaser(){ // Player Laser controls
+  console.log('player laser')
+  //  (event.code === 'Space'){
+    console.log('space laser')
     let playerLaser = burgerPosition
     const intervalID = setInterval(() => {
       cells[playerLaser].classList.remove('playerLaser') 
       playerLaser -= width 
       cells[playerLaser].classList.add('playerLaser')
-      if (cells[playerLaser].classList.contains('dumbbell') ) {
-        cells[playerLaser].classList.remove('playerLaser')
+      if (cells[playerLaser].classList.contains('dumbbell') ) {       
+        cells[playerLaser].classList.remove('playerLaser')        
         console.log(playerLaser)
         clearInterval(intervalID)
         const dumbbellIndex = dumbbellPosition.find(dumbbell => {
@@ -135,11 +142,12 @@ function handlePlayerLaser(event){ // Player Laser controls
       } else if (playerLaser < width) { 
         cells[playerLaser].classList.remove('playerLaser')
         clearInterval(intervalID)
-      } else if (score >= 10000) { // Player wins if they score this much
+      } else if (score >= 22000) { // Player wins if they score this much
         grid.textContent = `You have defeated the gym heads! You scored ${score}`
+        resetGame()
       }   
-    }, 200)
-  }
+    }, 120)
+  
 }
 
 function computerMoveRight() {
@@ -175,7 +183,7 @@ function handleComputerControls(){ // Programming dynamic movement of aliens
         hasGameEnded = true
         grid.textContent = `You lose! You scored ${score}`
         overallScore.innerHTML = `${score}` 
-      } else if (aliveDb === false) //If all aliens are killed, triggers end game
+      } else if (aliveDb  === false) //If all aliens are killed, triggers end game
         grid.textContent = `You have defeated the gym heads! You scored ${score}`
     })
     const rightBorder = dumbbellPosition[dumbbellPosition.length - 1].index % width === width - 2//Defining the left and right borders of grid
@@ -209,7 +217,7 @@ function handleComputerControls(){ // Programming dynamic movement of aliens
         
     }
 
-  }, 500) 
+  }, 300) 
 }
 
 function handleComputerLaser(){ //Handles alien laser behaviour
@@ -238,7 +246,8 @@ function handleComputerLaser(){ //Handles alien laser behaviour
         cells[computerLaserIndex].classList.remove('computerLaser') 
       } else if (lives === 0) {
         grid.textContent = `You lose! You scored ${score}`
-        overallScore.innerHTML = `${score}`         
+        overallScore.innerHTML = `${score}`   
+        resetGame()      
       } else if (computerLaserIndex > 380){
         clearInterval(dbLaserMovement)
         cells[computerLaserIndex].classList.remove('computerLaser')      
@@ -246,14 +255,14 @@ function handleComputerLaser(){ //Handles alien laser behaviour
         clearInterval(dbLaserMovement)
         clearInterval(computerLaserID)
       }
-    }, 500)
-  }, 5000)
+    }, 120)
+  }, 3000)
 }
 
 
-// Events
+// * * * * * EVENTS  * * * * *
 startButton.addEventListener('click', handleGameStart)
 document.addEventListener('keyup', handlePlayerControls)
-document.addEventListener('keyup', handlePlayerLaser)
+// document.addEventListener('keyup', handlePlayerLaser)
 
 

@@ -2,35 +2,56 @@
   box-sizing: border-box;
 }
 
+#start {
+  color: white;
+  background-color: darkgray;
+}
+#start:hover{
+  background-color: rgba(201, 176, 36, 0.418);
+}
+
 body {
   height: 100vh;
   margin: 0 auto;
-  background-color: gray;
+  background-color: black;
+  font-family: balsamiq sans;
 }
 header {
   display: flex;
   justify-content: center;
 
+
+}
+header img {
+  width: 40%;
+  height: 40%;
 }
 .controls-wrapper{
   background-image: ;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  color: black;
+  color: white;
   float: left;
-  border: 1px solid gray;
   margin: 0px 40px 0px 200px;
   height: 80vh;
-  width: 150px;
+  width: 200px;
   padding: 20px 0px 20px 2px;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.9);
+  box-shadow: 0 0 20px 0 rgba(139, 133, 133, 0.9);
+  line-height: 25px;
+  text-align: center;
 }
 
-.playerControls img{
-  height: 25px;
-}
 
+.controls-wrapper img{
+  height: 20px;
+  width: 20px;
+}
+.controls-wrapper h1{
+  color: darkgray;
+  font-size: 25px;
+  text-align: center;
+}
 .grid-wrapper {
   height: 90vh;
   width: 600px;
@@ -43,7 +64,7 @@ header {
 
 .grid {
   align-items: center;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.9);
+  box-shadow: 0 0 20px 0 rgba(139, 133, 133, 0.9);
   display: flex;
   flex-wrap: wrap;
   height: 100%;
