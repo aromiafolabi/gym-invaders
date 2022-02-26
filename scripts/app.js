@@ -165,7 +165,6 @@ function computerMovesLeft () {
 
 function handleComputerControls(){ // Programming dynamic movement of aliens
   addDumbbell()
-
   const clearDB = setInterval(() => {
     removeDumbbell()
     const aliveDb = dumbbellPosition.filter(dumbbell => {
@@ -260,3 +259,4 @@ startButton.addEventListener('click', handleGameStart)
 document.addEventListener('keyup', handlePlayerControls)
 
 
+ 
